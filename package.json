@@ -1,0 +1,19 @@
+{
+  "name": "@wasmatazz/c-cpp-base",
+  "version": "1.0.0",
+  "description": "Package base for C/C++ based projects.",
+  "main": "index.js",
+  "repository": "https://github.com/wasmatazz/c-cpp-base",
+  "author": "Duncan Cross <duncan.cross@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "glob": "^7.1.6"
+  },
+  "bin": {
+    "wasmatazz-c": "./wasmatazz-c.js"
+  },
+  "scripts": {
+    "start": "node ./wasmatazz-c.js index.js package.json"
+  }
+}
