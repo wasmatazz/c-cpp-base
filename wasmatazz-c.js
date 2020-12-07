@@ -26,7 +26,7 @@ const sysroot_path = path.resolve(
 
 const args = process.argv.slice(2);
 const globs = args;
-const mergedGlob = globs.length === 1 ? globs[0] : '@(' + globs.join('|') + ')';
+const mergedGlob = globs.length === 1 ? globs[0] : '{' + globs.join(',') + '}';
 const files = glob.sync(mergedGlob, {absolute:true});
 
 const compile_args = [
