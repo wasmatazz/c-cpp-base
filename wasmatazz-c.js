@@ -29,6 +29,7 @@ const globs = [];
 const includes = [path.resolve(__dirname, 'include')];
 const defines = [];
 let output = 'output.wasm';
+let exportsList = undefined;
 for (let arg_i = 2; arg_i < process.argv.length; arg_i++) {
   const arg = process.argv[arg_i];
   if (arg[0] === '-') {
@@ -60,6 +61,15 @@ for (let arg_i = 2; arg_i < process.argv.length; arg_i++) {
         }
         break;
       }
+      case 'e': {
+        if (arg.length === 2) {
+          exportsList = path.resolve(process.cwd(), process.argv[++arg_i]);
+        }
+        else {
+          exportsList = path.resolve(process.cwd(), arg.slice(2));
+        }
+        break;
+      }
       default: {
         console.error('unknown switch: ' + arg);
         process.exit(2);
@@ -87,6 +97,7 @@ const compile_args = [
   ...defines.map(v => '-D'+v),
   ...includes.map(v => '-I'+v),
   ...files,
+  ...exportsList ? ['-exported-symbols-list', path.resolve(process.cwd(), exportsList)] : [],
 ];
 
 const compile_proc = child_process.spawn(
