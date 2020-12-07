@@ -88,7 +88,7 @@ const files = glob.sync(mergedGlob, {absolute:true});
 const exportsList = [];
 if (exportsPath) {
   const exportsFile = readFileSync(path.resolve(process.cwd(), exportsPath), {encoding: 'utf-8'});
-  for (const exportName of exportsFile.trim().split(/s+/g)) {
+  for (const exportName of exportsFile.trim().split(/\s+/g)) {
     exportsList.push(exportName);
   }
 }
