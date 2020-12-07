@@ -25,7 +25,52 @@ const sysroot_path = path.resolve(
 );
 
 const args = process.argv.slice(2);
-const globs = args;
+const globs = [];
+const includes = [path.resolve(__dirname, 'include')];
+const defines = [];
+let output = 'output.wasm';
+for (let arg_i = 2; arg_i < process.argv.length; arg_i++) {
+  const arg = process.argv[arg_i];
+  if (arg[0] === '-') {
+    switch (arg[1]) {
+      case 'D': {
+        if (arg.length === 2) {
+          defines.push(process.argv[++arg_i]);
+        }
+        else {
+          defines.push(arg.slice(2));
+        }
+        break;
+      }
+      case 'I': {
+        if (arg.length === 2) {
+          includes.push(path.resolve(process.cwd(), process.argv[++arg_i]));
+        }
+        else {
+          includes.push(path.resolve(process.cwd(), arg.slice(2)));
+        }
+        break;
+      }
+      case 'o': {
+        if (arg.length === 2) {
+          output = path.resolve(process.cwd(), process.argv[++arg_i]);
+        }
+        else {
+          output = path.resolve(process.cwd(), arg.slice(2));
+        }
+        break;
+      }
+      default: {
+        console.error('unknown switch: ' + arg);
+        process.exit(2);
+        break;
+      }
+    }
+  }
+  else {
+    globs.push(arg);
+  }
+}
 const mergedGlob = globs.length === 1 ? globs[0] : '{' + globs.join(',') + '}';
 const files = glob.sync(mergedGlob, {absolute:true});
 
@@ -38,9 +83,10 @@ const compile_args = [
   '-Wl,-export-dynamic',
   '-Wl,-allow-undefined',
   '-Wl,-no-entry',
-  '-I', path.resolve(__dirname, 'include'),
-  '-o', 'module.wasm',
-  ...files
+  '-o', output,
+  ...defines.map(v => '-D'+v),
+  ...includes.map(v => '-I'+v),
+  ...files,
 ];
 
 const compile_proc = child_process.spawn(
