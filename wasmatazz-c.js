@@ -106,7 +106,7 @@ const compile_args = [
   ...defines.map(v => '-D'+v),
   ...includes.map(v => '-I'+v),
   ...files,
-  ...exportsPath.map(v => '-Wl,-export='+v),
+  ...exportsList.map(v => '-Wl,-export='+v),
 ];
 
 const compile_proc = child_process.spawn(
