@@ -4,6 +4,7 @@ const path = require('path');
 const os = require('os');
 const child_process = require('child_process');
 const glob = require('glob');
+const { readFileSync } = require('fs');
 
 const wasi_sdk_root = process.env.npm_config_wasi_sdk_root;
 
@@ -84,6 +85,14 @@ for (let arg_i = 2; arg_i < process.argv.length; arg_i++) {
 const mergedGlob = globs.length === 1 ? globs[0] : '{' + globs.join(',') + '}';
 const files = glob.sync(mergedGlob, {absolute:true});
 
+if (exportsList) {
+  const exportsFile = readFileSync(path.resolve(process.cwd(), exportsFile), {encoding: 'utf-8'});
+  exportsList = exportsFile.trim().split(/s+/g);
+}
+else {
+  exportsList = [];
+}
+
 const compile_args = [
   '--target=wasm32-wasi',
   '-nostartfiles',
@@ -97,7 +106,7 @@ const compile_args = [
   ...defines.map(v => '-D'+v),
   ...includes.map(v => '-I'+v),
   ...files,
-  ...exportsList ? ['-exported-symbols-list', path.resolve(process.cwd(), exportsList)] : [],
+  ...exportsList.map(v => '-Wl,-export='+v),
 ];
 
 const compile_proc = child_process.spawn(
