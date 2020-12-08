@@ -1,6 +1,6 @@
 {
   "name": "@wasmatazz/c-cpp-base",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Package base for C/C++ based projects.",
   "main": "index.js",
   "repository": "https://github.com/wasmatazz/c-cpp-base",
